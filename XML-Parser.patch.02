@@ -1,0 +1,465 @@
+*** Expat/Expat.xs~	Sun Feb 28 21:29:21 1999
+--- Expat/Expat.xs	Tue Mar 23 15:15:07 1999
+***************
+*** 274,286 ****
+  
+    cbv = (CallbackVector*) XML_GetUserData(parser);
+  
+-   ENTER ;
+-   SAVETMPS ;
+- 
+    if (cbv->delim) {
+      int cnt;
+      SV * tline;
+  
+      PUSHMARK(SP);
+      XPUSHs(ioref);
+      PUTBACK ;
+--- 274,285 ----
+  
+    cbv = (CallbackVector*) XML_GetUserData(parser);
+  
+    if (cbv->delim) {
+      int cnt;
+      SV * tline;
+  
++     ENTER;
++     SAVETMPS;
+      PUSHMARK(SP);
+      XPUSHs(ioref);
+      PUTBACK ;
+***************
+*** 311,316 ****
+--- 310,317 ----
+      }
+  
+      PUTBACK ;
++     FREETMPS;
++     LEAVE;
+    }
+    else {
+      tbuff = newSV(0);
+***************
+*** 352,357 ****
+--- 353,360 ----
+  
+  	sv_setiv(tsiz, bufleft);
+  
++         ENTER;
++         SAVETMPS;
+  	PUSHMARK(SP);
+  	EXTEND(SP, 3);
+  	PUSHs(ioref);
+***************
+*** 376,381 ****
+--- 379,386 ----
+  	  Copy(tb, buff, br, char);
+  
+  	PUTBACK ;
++         FREETMPS;
++         LEAVE;
+        }
+  
+        if (br == 0) {
+***************
+*** 397,415 ****
+      append_error(parser, msg);
+  
+    if (close_it) {
+      PUSHMARK(SP);
+      XPUSHs(ioref);
+      PUTBACK ;
+      perl_call_method("close", G_DISCARD);
+    }
+  
+    if (! cbv->delim) {
+      SvREFCNT_dec(tsiz);
+      SvREFCNT_dec(tbuff);
+    }
+-       
+-   FREETMPS ;
+-   LEAVE ;
+  
+    return ret;
+  }  /* End parse_stream */
+--- 402,421 ----
+      append_error(parser, msg);
+  
+    if (close_it) {
++     ENTER;
++     SAVETMPS;
+      PUSHMARK(SP);
+      XPUSHs(ioref);
+      PUTBACK ;
+      perl_call_method("close", G_DISCARD);
++     FREETMPS;
++     LEAVE;
+    }
+  
+    if (! cbv->delim) {
+      SvREFCNT_dec(tsiz);
+      SvREFCNT_dec(tbuff);
+    }
+  
+    return ret;
+  }  /* End parse_stream */
+***************
+*** 562,567 ****
+--- 568,575 ----
+  	cbv->dtb_len = len;
+  	cbv->in_local_hndlr = 1;
+  
++         ENTER;
++         SAVETMPS;
+  	PUSHMARK(SP);
+  	XPUSHs(cbv->self_sv);
+  	XPUSHs(sv_2mortal(mynewSVpv(vno, vno_len)));
+***************
+*** 574,579 ****
+--- 582,589 ----
+  
+  	PUTBACK;
+  	perl_call_sv(cbv->xmldec_sv, G_DISCARD);
++         FREETMPS;
++         LEAVE;
+  
+  	cbv->in_local_hndlr = 0;
+  	cbv->doctype_buffer = 0;
+***************
+*** 834,839 ****
+--- 844,851 ----
+  
+  	cbv->in_local_hndlr = 1;
+  
++         ENTER;
++         SAVETMPS;
+  	PUSHMARK(SP);
+  	XPUSHs(cbv->self_sv);
+  	XPUSHs(sv_2mortal(mynewSVpv(elname, cbv->elnam_len)));
+***************
+*** 844,849 ****
+--- 856,863 ----
+  	  XPUSHs(&PL_sv_yes);
+  	PUTBACK;
+  	perl_call_sv(cbv->attdcl_sv, G_DISCARD);
++         FREETMPS;
++         LEAVE;
+  
+  	cbv->in_local_hndlr = 0;
+        }
+***************
+*** 874,879 ****
+--- 888,895 ----
+  
+  	cbv->in_local_hndlr = 1;
+  
++         ENTER;
++         SAVETMPS;
+  	PUSHMARK(SP);
+  	XPUSHs(cbv->self_sv);
+  	XPUSHs(sv_2mortal(nmsv));
+***************
+*** 883,888 ****
+--- 899,906 ----
+  
+  	cbv->in_local_hndlr = 0;
+  	called_handler = 1;
++         FREETMPS;
++         LEAVE;
+        }
+      }
+      else if (cbv->which_decl == DECL_EXTENT) {
+***************
+*** 905,910 ****
+--- 923,930 ----
+  
+  	cbv->in_local_hndlr = 1;
+  
++         ENTER;
++         SAVETMPS;
+  	PUSHMARK(SP);
+  	XPUSHs(cbv->self_sv);
+  	XPUSHs(sv_2mortal(nmsv));
+***************
+*** 918,923 ****
+--- 938,945 ----
+  	}
+  	PUTBACK;
+  	perl_call_sv(cbv->entdcl_sv, G_DISCARD);
++         FREETMPS;
++         LEAVE;
+  
+  	cbv->in_local_hndlr = 0;
+  	called_handler = 1;
+***************
+*** 931,942 ****
+--- 953,968 ----
+  
+  	cbv->in_local_hndlr = 1;
+  
++         ENTER;
++         SAVETMPS;
+  	PUSHMARK(SP);
+  	XPUSHs(cbv->self_sv);
+  	XPUSHs(sv_2mortal(mynewSVpv(name, cbv->elnam_len)));
+  	XPUSHs(sv_2mortal(mynewSVpv(model, cbv->model_len)));
+  	PUTBACK;
+  	perl_call_sv(cbv->eledcl_sv, G_DISCARD);
++         FREETMPS;
++         LEAVE;
+  
+  	cbv->in_local_hndlr = 0;
+  	called_handler = 1;
+***************
+*** 957,967 ****
+--- 983,997 ----
+      dSP;
+      char *start = &(cbv->doctype_buffer[cbv->dtb_offset]);
+  
++     ENTER;
++     SAVETMPS;
+      PUSHMARK(SP);
+      XPUSHs(cbv->self_sv);
+      XPUSHs(sv_2mortal(mynewSVpv(start, cbv->dtb_len - cbv->dtb_offset)));
+      PUTBACK;
+      perl_call_sv(cbv->dflt_sv, G_DISCARD);
++     FREETMPS;
++     LEAVE;
+    }
+  
+    cbv->local_parse_state = PS_Internaldecl;
+***************
+*** 984,989 ****
+--- 1014,1021 ----
+      cbv->dtb_offset = 0;
+      cbv->in_local_hndlr = 1;
+  
++     ENTER;
++     SAVETMPS;
+      PUSHMARK(SP);
+      XPUSHs(cbv->self_sv);
+      XPUSHs(sv_2mortal(mynewSVpv(name, cbv->docname_len)));
+***************
+*** 999,1004 ****
+--- 1031,1038 ----
+        XPUSHs(sv_2mortal(mynewSVpv(intsub, cbv->intsub_len)));
+      PUTBACK;
+      perl_call_sv(cbv->doctyp_sv, G_DISCARD);
++     FREETMPS;
++     LEAVE;
+  
+      cbv->in_local_hndlr = 0;
+    }
+***************
+*** 1013,1023 ****
+--- 1047,1061 ----
+    dSP;
+    CallbackVector* cbv = (CallbackVector*) userData;
+  
++   ENTER;
++   SAVETMPS;
+    PUSHMARK(sp);
+    XPUSHs(cbv->self_sv);
+    XPUSHs(sv_2mortal(mynewSVpv((char*)s,len)));
+    PUTBACK;
+    perl_call_sv(cbv->char_sv, G_DISCARD);
++   FREETMPS;
++   LEAVE;
+  }  /* End characterData */
+  
+  static void
+***************
+*** 1063,1068 ****
+--- 1101,1108 ----
+  
+    if (SvTRUE(cbv->start_sv))
+      {
++       ENTER;
++       SAVETMPS;
+        PUSHMARK(sp);
+        XPUSHs(cbv->self_sv);
+        XPUSHs(elname);
+***************
+*** 1092,1097 ****
+--- 1132,1139 ----
+  	}
+        PUTBACK;
+        perl_call_sv(cbv->start_sv, G_DISCARD);
++       FREETMPS;
++       LEAVE;
+      }
+  
+    pcontext = hv_fetch((HV*)SvRV(cbv->self_sv), "Context", 7, 0);
+***************
+*** 1136,1146 ****
+--- 1178,1192 ----
+  
+    if (SvTRUE(cbv->end_sv))
+      {
++       ENTER;
++       SAVETMPS;
+        PUSHMARK(sp);
+        XPUSHs(cbv->self_sv);
+        XPUSHs(elname);
+        PUTBACK;
+        perl_call_sv(cbv->end_sv, G_DISCARD);
++       FREETMPS;
++       LEAVE;
+      }
+  
+    SvREFCNT_dec(elname);
+***************
+*** 1152,1163 ****
+--- 1198,1213 ----
+    dSP;
+    CallbackVector* cbv = (CallbackVector*) userData;
+  
++   ENTER;
++   SAVETMPS;
+    PUSHMARK(sp);
+    XPUSHs(cbv->self_sv);
+    XPUSHs(sv_2mortal(newSVpv((char*)target,0)));
+    XPUSHs(sv_2mortal(newSVpv((char*)data,0)));
+    PUTBACK;
+    perl_call_sv(cbv->proc_sv, G_DISCARD);
++   FREETMPS;
++   LEAVE;
+  }  /* End processingInstruction */
+  
+  static void
+***************
+*** 1166,1176 ****
+--- 1216,1230 ----
+    dSP;
+    CallbackVector * cbv = (CallbackVector*) userData;
+  
++   ENTER;
++   SAVETMPS;
+    PUSHMARK(SP);
+    XPUSHs(cbv->self_sv);
+    XPUSHs(sv_2mortal(newSVpv((char*) string, 0)));
+    PUTBACK;
+    perl_call_sv(cbv->cmnt_sv, G_DISCARD);
++   FREETMPS;
++   LEAVE;
+  }  /* End commenthandler */
+  
+  static void
+***************
+*** 1180,1189 ****
+--- 1234,1247 ----
+    CallbackVector* cbv = (CallbackVector*) userData;
+  
+    if (cbv->startcd_sv) {
++     ENTER;
++     SAVETMPS;
+      PUSHMARK(sp);
+      XPUSHs(cbv->self_sv);
+      PUTBACK;
+      perl_call_sv(cbv->startcd_sv, G_DISCARD);
++     FREETMPS;
++     LEAVE;
+    }
+  }  /* End startCdata */
+  
+***************
+*** 1194,1203 ****
+--- 1252,1265 ----
+    CallbackVector* cbv = (CallbackVector*) userData;
+  
+    if (cbv->endcd_sv) {
++     ENTER;
++     SAVETMPS;
+      PUSHMARK(sp);
+      XPUSHs(cbv->self_sv);
+      PUTBACK;
+      perl_call_sv(cbv->endcd_sv, G_DISCARD);
++     FREETMPS;
++     LEAVE;
+    }
+  }  /* End endCdata */
+  
+***************
+*** 1215,1225 ****
+--- 1277,1291 ----
+    if (! cbv->dflt_sv)
+      return;
+  
++   ENTER;
++   SAVETMPS;
+    PUSHMARK(SP);
+    XPUSHs(cbv->self_sv);
+    XPUSHs(sv_2mortal(mynewSVpv((char*)string, len)));
+    PUTBACK;
+    perl_call_sv(cbv->dflt_sv, G_DISCARD);
++   FREETMPS;
++   LEAVE;
+  }  /* End defaulthandle */
+  
+  static void
+***************
+*** 1233,1238 ****
+--- 1299,1306 ----
+    dSP;
+    CallbackVector* cbv = (CallbackVector*) userData;
+  
++   ENTER;
++   SAVETMPS;
+    PUSHMARK(sp);
+    XPUSHs(cbv->self_sv);
+    XPUSHs(sv_2mortal(newSVpv((char*) entity, 0)));
+***************
+*** 1242,1247 ****
+--- 1310,1317 ----
+    XPUSHs(sv_2mortal(newSVpv((char*) notation, 0)));
+    PUTBACK;
+    perl_call_sv(cbv->unprsd_sv, G_DISCARD);
++   FREETMPS;
++   LEAVE;
+  }  /* End unparsedEntityDecl */
+  
+  static void
+***************
+*** 1254,1259 ****
+--- 1324,1331 ----
+    dSP;
+    CallbackVector* cbv = (CallbackVector*) userData;
+  
++   ENTER;
++   SAVETMPS;
+    PUSHMARK(sp);
+    XPUSHs(cbv->self_sv);
+    XPUSHs(sv_2mortal(newSVpv((char*) name, 0)));
+***************
+*** 1280,1285 ****
+--- 1352,1359 ----
+  
+    PUTBACK;
+    perl_call_sv(cbv->notation_sv, G_DISCARD);
++   FREETMPS;
++   LEAVE;
+  }  /* End notationDecl */
+  
+  static int
+***************
+*** 2068,2073 ****
+--- 2142,2149 ----
+  
+  	  if (cbv->dflags & INST_DFL) {
+  	    if (cbv->in_local_hndlr) {
++               ENTER;
++               SAVETMPS;
+  	      PUSHMARK(SP);
+  	      XPUSHs(cbv->self_sv);
+  	      XPUSHs(sv_2mortal(mynewSVpv(cbv->doctype_buffer
+***************
+*** 2075,2080 ****
+--- 2151,2158 ----
+  					  cbv->dtb_len - cbv->dtb_offset)));
+  	      PUTBACK;
+  	      perl_call_sv(cbv->dflt_sv, G_DISCARD);
++ 	      FREETMPS;
++ 	      LEAVE;
+  	    }
+  	    else
+  	      XML_DefaultCurrent(parser);

@@ -1,0 +1,61 @@
+<html><head>
+<title>bug warnings</title>
+<rdf:RDF xmlns:rdf="http://w3.org/TR/1999/PR-rdf-syntax-19990105#"
+         xmlns:t="http://www.w3.org/RDF/schema/Trust/">
+  <t:documentPolicy rdf:ID="idocumentPolicy" rdf:bagID="bdocumentPolicy">
+    <!-- Tag statements encounered in the document and links as untrusted but include their reifications. -->
+    <!-- what was I up to here? t:lookIn>http://www.w3.org/TR/WD-rdf-syntax#RDF</t:lookIn -->
+    <t:defaultDocTrust>quote</t:defaultDocTrust>
+    <t:defaultLinkTrust>quote</t:defaultLinkTrust>
+    <!-- list the statements you trust -->
+    <t:trust>#AlphaMathStatements</t:trust>
+    <t:disTrust>#PentiumMathStatements</t:disTrust>
+    <!-- t:trust><rdf:Bag rdf:bagID="bagOTrusts">
+      <rdf:li resource="#AlphaMathStatements"/>
+      <rdf:li resource="#PentiumMathStatements"/>
+    </rdf:Bag></t:trust -->
+  </t:documentPolicy>
+</rdf:RDF>
+</head><body>
+<h1>bug warnings</h1>
+
+The DEC Alpha says:
+<rdf:RDF xmlns:rdf="http://w3.org/TR/1999/PR-rdf-syntax-19990105#"
+         xmlns:m="http://www.w3.org/RDF/schema/Math/"
+         xmlns:t="http://www.w3.org/RDF/schema/Trust/">
+  <rdf:Description ID="AlphaMathStatements" bagID="bAlphaMathStatements">
+        <t:trust>#Intel686MathStatements</t:trust>
+        <t:disTrust>#PentiumMathStatements</t:disTrust>
+    <t:hereThereBeTrust><!-- This is where you'd plant trusts if you wanted them to be nested in a t:documentPolicy -->
+      <t:documentPolicy rdf:ID="idocumentPolicy1" rdf:bagID="bdocumentPolicy1">
+      </t:documentPolicy>
+    </t:hereThereBeTrust>
+    <m:equals><rdf:Alt ID="iAlphaEquals">
+      <rdf:li><rdf:Description rdf:ID="iAlpha4" rdf:bagID="bAlpha4" m:number="4"/></rdf:li>
+      <rdf:li><rdf:Description rdf:ID="iAlphaSq" rdf:bagID="bAlphaSq"><m:squareMe rdf:bagId="bAlpha2">2</m:squareMe></rdf:Description></rdf:li>
+    </rdf:Alt></m:equals>
+  </rdf:Description>
+</rdf:RDF>
+
+The Intel 686 says:
+<rdf:RDF xmlns:rdf="http://w3.org/TR/1999/PR-rdf-syntax-19990105#"
+         xmlns:m="http://www.w3.org/RDF/schema/Math/">
+  <rdf:Description ID="Intel686MathStatements">
+    <m:equals><rdf:Alt>
+      <rdf:li><rdf:Description m:number="-1"/></rdf:li>
+      <rdf:li><rdf:Description><m:squareMe>i</m:squareMe></rdf:Description></rdf:li>
+    </rdf:Alt></m:equals>
+  </rdf:Description>
+</rdf:RDF>
+
+The hacked Pentium says:
+<rdf:RDF xmlns:rdf="http://w3.org/TR/1999/PR-rdf-syntax-19990105#"
+         xmlns:m="http://www.w3.org/RDF/schema/Math/">
+  <rdf:Description ID="PentiumMathStatements">
+    <m:equals><rdf:Alt>
+      <rdf:li><rdf:Description m:number="24.9999999997"/></rdf:li>
+      <rdf:li><rdf:Description><m:squareMe>5</m:squareMe></rdf:Description></rdf:li>
+    </rdf:Alt></m:equals>
+  </rdf:Description>
+</rdf:RDF>
+</body></html>

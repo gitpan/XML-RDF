@@ -1,0 +1,49 @@
+$Header: /spare2/ecila-cvsroot/XML-RDF/INSTALL,v 1.1.1.1 1999/03/24 17:55:57 ecila40 Exp $
+
+Requires: 
+---------
+
+          To build the software you will need:
+
+          perl5.005 or higher (http://www.perl.org/)
+	  XML-Parser-2.20 (http://www.perl.org/)
+	     you will need to patch this version as shown below.
+
+Installing:
+------------
+
+          #
+          # Extract the distribution
+          #
+          tar -zxvf XML-RDF-*.tar.gz
+	  #
+	  # Patch and recompile XML-Parser-2.20
+	  #
+	  cd XML-Parser-2.20
+	  cat ../XML-RDF-*/XML-Parser.patch.?? | patch -p0 
+	  make install 
+          #
+          # Go to the distribution directory
+          #
+          cd XML-RDF-*
+	  # 
+	  # Generate Makefiles
+	  #
+	  perl Makefile.PL
+	  # 
+	  # Prepare the installation
+	  #
+          make all
+	  # 
+	  # Run tests
+	  #
+	  make test
+	  #
+	  # Install it
+	  #
+	  make install
+
+------------------------
+Loic Dachary
+loic@senga.org
+http://www.senga.org/

@@ -1,0 +1,20 @@
+*** Parser.pm~	Fri Feb 26 19:15:35 1999
+--- Parser.pm	Tue Mar 23 13:05:12 1999
+***************
+*** 51,57 ****
+        
+        croak "Undefined style: $style"
+  	unless defined($Built_In_Styles{$stylepkg});
+!       $stylepkg = 'XML::Parser::' . $stylepkg;
+      }
+      
+      my $htype;
+--- 51,58 ----
+        
+        croak "Undefined style: $style"
+  	unless defined($Built_In_Styles{$stylepkg});
+!       $stylepkg = "${class}::" . $stylepkg;
+!       eval "require $stylepkg";
+      }
+      
+      my $htype;

@@ -1,0 +1,17 @@
+ChangeLog
+INSTALL
+MANIFEST
+Makefile.PL
+README
+XML-Parser.patch.01
+XML-Parser.patch.02
+lib/XML/RDF.pm
+lib/XML/RDF/Debug.pm
+lib/XML/RDF/Objects.pm
+lib/XML/RDF/Stream.pm
+lib/XML/RDF/Subs.pm
+lib/XML/RDF/Tree.pm
+t/rdf.t
+t/samples/author.rdf
+t/samples/bag.rdf
+t/samples/bug.rdf

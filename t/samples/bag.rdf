@@ -1,0 +1,10 @@
+<RDF xmlns="http://w3.org/TR/1999/PR-rdf-syntax-19990105#">
+ <Bag ID="one">
+  <li resource="http://foo.com/"/>
+  <li>My resource</li>
+ </Bag>
+ <Seq ID="two"
+	_1="first"
+	_3="third"
+	/>
+</RDF>
